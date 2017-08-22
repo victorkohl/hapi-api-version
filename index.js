@@ -14,7 +14,8 @@ const internals = {
         vendorName: Joi.string().trim().min(1).required(),
         versionHeader: Joi.string().trim().min(1).default('api-version'),
         passiveMode: Joi.boolean().default(false),
-        basePath: Joi.string().trim().min(1).default('/')
+        basePath: Joi.string().trim().min(1).default('/'),
+        connectionName: Joi.string().trim()
     })
 };
 
@@ -73,6 +74,10 @@ exports.register = function (server, options, next) {
 
     //Use the validated and maybe converted values from Joi
     options = validateOptions.value;
+
+    if (options.connectionName) {
+        server = server.select(options.connectionName);
+    }
 
     server.ext('onRequest', (request, reply) => {
 
